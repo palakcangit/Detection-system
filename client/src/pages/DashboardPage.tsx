@@ -28,7 +28,7 @@ export const DashboardPage = () => {
       </Typography>
       
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+        {/* <Grid item xs={12} md={8}> */}
           <Box sx={{ mb: 4 }}>
             <AttackAlerts alerts={mockAlerts} />
           </Box>
@@ -41,10 +41,10 @@ export const DashboardPage = () => {
           </Box>
         </Grid>
         
-        <Grid item xs={12} md={4}>
+        {/* <Grid item xs={12} md={4}> */}
           <DataUpload />
-        </Grid>
-      </Grid>
+        {/* </Grid> */}
+      {/* </Grid> */}
     </Container>
   );
 };
