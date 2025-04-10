@@ -14,12 +14,13 @@ const storage = multer.diskStorage({
 
 export const upload = multer({ storage });
 
-export const uploadDataset = async (req: Request, res: Response) => {
+export const uploadDataset = async (req: Request, res: Response):Promise<void> => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+      res.status(400).json({ message: 'No file uploaded' });
+      return
     }
-    
+    console.log(req.file)
     // Here you would typically process the file
     // For now, we'll just return a success message
     res.json({

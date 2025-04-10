@@ -1,11 +1,32 @@
-import { Container, Paper, Avatar, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Container, Paper, Avatar, Typography, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { LoginForm } from '../components/Auth/LoginForm';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
-  const handleLogin = (data: { email: string; password: string }) => {
-    console.log('Login data:', data);
-    // TODO: Connect to backend
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleLogin = async (data: { email: string; password: string }) => {
+    setError(null);
+    
+    try {
+      const response = await axios.post('http://localhost:2000/api/auth/login', {
+        email: data.email,
+        password: data.password
+      });
+
+      localStorage.setItem('authToken', response.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Login failed. Please try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
+    }
   };
 
   return (
@@ -17,6 +38,13 @@ export const LoginPage = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        
         <LoginForm onSubmit={handleLogin} />
       </Paper>
     </Container>

@@ -1,28 +1,30 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppError } from './errorMiddleware'; // Assuming you have this from previous examples
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
-    
     if (!token) {
-      throw new AppError('Authorization token missing', 401);
+      res.status(401).json({ message: 'Authorization Token Missing' });
+      return
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string };
     
     if (!decoded.userId) {
-      throw new AppError('Invalid token payload', 401);
+      res.status(401).json({ message: 'Invalid Token Payload' });
+      return
     }
  
-    req.userId = decoded.userId;
+    // req.userId = decoded.userId;
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      next(new AppError('Token expired', 401));
+      res.status(401).json({ message: 'Token Expired' });
+      return
     } else if (error instanceof jwt.JsonWebTokenError) {
-      next(new AppError('Invalid token', 401));
+      res.status(401).json({ message: 'Invalid Token' });
+      return
     } else {
       next(error);
     }

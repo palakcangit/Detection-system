@@ -22,9 +22,12 @@ export const DataUpload = () => {
     formData.append('dataset', file);
 
     try {
-      await axios.post('/api/datasets/upload', formData, {
+      const token = localStorage.getItem('authToken')
+      console.log(token)
+      await axios.post('http://localhost:2000/api/datasets/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`,
         },
       });
       setUploadSuccess(true);
